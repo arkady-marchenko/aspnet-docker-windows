@@ -1,0 +1,1 @@
+﻿docker build -t inspiretech/aspnet:4.8-reverse-proxy .
