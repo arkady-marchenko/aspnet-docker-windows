@@ -17,15 +17,14 @@ if ($certPath -and (Test-Path -Path "$certPath" -PathType Leaf))
   $binding = Get-WebBinding -Name "$siteName" -Protocol "https";
   if ($binding)
   {
-    Write-Host "Binding for HTTPS exists already, skipping..."
+    Write-Host "Binding for HTTPS exists already, deleting..."
+    $binding | Remove-WebBinding
   }
-  else
-  {
-    Write-Host "Creating new HTTPS binding and assigning certificate..."
-    New-WebBinding -Name "$siteName" -IPAddress "*" -Port 443 -Protocol "https";
-    $binding = Get-WebBinding -Name "$siteName" -Protocol "https";
-    $binding.AddSslCertificate($cert.GetCertHashString(), "my");
-  }
+
+  Write-Host "Creating new HTTPS binding and assigning certificate..."
+  New-WebBinding -Name "$siteName" -IPAddress "*" -Port 443 -Protocol "https";
+  $binding = Get-WebBinding -Name "$siteName" -Protocol "https";
+  $binding.AddSslCertificate($cert.GetCertHashString(), "my");
 }
 
 Write-Host "Starting IIS..."
