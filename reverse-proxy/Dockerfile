@@ -9,8 +9,12 @@ RUN Invoke-WebRequest https://download.microsoft.com/download/1/2/8/128E2E22-C1B
  Start-Process requestRouter_amd64.msi -ArgumentList "/qn" -Wait; \
  Remove-Item requestRouter_amd64.msi
 
-RUN C:\Windows\System32\inetsrv\appcmd.exe set CONFIG -section:system.webServer/proxy /enabled:"True" /commit:apphost
+RUN C:\Windows\System32\inetsrv\appcmd.exe set CONFIG -section:system.webServer/proxy /enabled:"True" -preserveHostHeader:"True" /commit:apphost
 
 WORKDIR /inetpub/wwwroot
 COPY web.config ./
 
+EXPOSE 80 443
+
+COPY start.ps1 /
+ENTRYPOINT ["powershell.exe", "-file", "/start.ps1"]
